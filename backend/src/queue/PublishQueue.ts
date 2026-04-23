@@ -35,6 +35,7 @@ interface D1PreparedStatement {
   bind(...args: any[]): D1PreparedStatement;
   first(): Promise<any>;
   run(): Promise<D1Result>;
+  all(): Promise<any[]>;
 }
 
 interface D1Result {
@@ -241,21 +242,26 @@ export class PublishQueue {
   /**
    * Get platform instance for job
    */
-  private async getPlatformInstance(platformType: string, platformId: string, env: Env): Promise<any> {
-    // This would integrate with your platform factory
-    // For now, return null to be implemented
-    const { PlatformFactory } = await import('../adapters/PlatformFactory.js');
-    
-    // Get platform credentials from database
-    const platform = await env.DB.prepare(
-      'SELECT * FROM platforms WHERE id = ?'
-    ).bind(platformId).first();
+  private async getPlatformInstance(platformType: PlatformType, platformId: string, env: Env): Promise<any> {
+    try {
+      // Import PlatformFactory dynamically
+      const { PlatformFactory } = await import('../adapters/PlatformFactory.js');
+      
+      // Get platform credentials from database
+      const platform = await env.DB.prepare(
+        'SELECT * FROM platforms WHERE id = ?'
+      ).bind(platformId).first();
 
-    if (!platform) {
+      if (!platform) {
+        console.error(`[Queue] Platform ${platformId} not found in database`);
+        return null;
+      }
+
+      return PlatformFactory.createAdapter(platformType, platform.access_token, platform.refresh_token, env);
+    } catch (error) {
+      console.error(`[Queue] Failed to get platform instance:`, error);
       return null;
     }
-
-    return PlatformFactory.createAdapter(platformType, platform.access_token, platform.refresh_token, env);
   }
 
   /**

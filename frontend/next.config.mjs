@@ -12,6 +12,8 @@ const nextConfig = {
     // This allows the build to continue even if there are type errors
     ignoreBuildErrors: true,
   },
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;
