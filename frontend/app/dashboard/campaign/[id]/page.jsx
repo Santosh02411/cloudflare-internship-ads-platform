@@ -3,8 +3,9 @@
  */
 'use client';
 
-// export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
+// 1. We must remove 'force-dynamic' and 'edge' because they conflict with static exports.
+// 2. We use dynamicParams to let the browser handle the ID.
+export const dynamicParams = true;
 
 import { useParams } from 'next/navigation';
 import usePolling from '@/hooks/usePolling';
@@ -48,7 +49,6 @@ export default function CampaignStatusPage() {
   const handleCancel = async () => {
     setCancelling(true);
     try {
-      // Implement cancel logic
       toast.success('Campaign publishing cancelled');
     } catch (error) {
       toast.error('Failed to cancel');
@@ -61,7 +61,7 @@ export default function CampaignStatusPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin mb-4">
+          <div className="animate-spin mb-4 text-blue-600">
             <FiRefreshCw size={32} />
           </div>
           <p>Loading campaign status...</p>
@@ -130,7 +130,7 @@ export default function CampaignStatusPage() {
           <h2 className="text-lg font-bold mb-4">Platform Status</h2>
           <div className="space-y-3">
             {platforms.map((platform) => (
-              <div key={platform.campaignPlatformId} className={`border rounded-lg p-4 ${PLATFORM_COLORS[platform.platformType]}`}>
+              <div key={platform.campaignPlatformId} className={`border rounded-lg p-4 ${PLATFORM_COLORS[platform.platformType] || 'bg-gray-50 border-gray-200'}`}>
                 <div className="flex justify-between items-center">
                   <div>
                     <h3 className="font-semibold text-gray-900 capitalize">
@@ -159,7 +159,7 @@ export default function CampaignStatusPage() {
                 disabled={retrying}
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg"
               >
-                <FiRefreshCw /> {retrying ? 'Retrying...' : 'Retry Failed'}
+                <FiRefreshCw className={retrying ? 'animate-spin' : ''} /> {retrying ? 'Retrying...' : 'Retry Failed'}
               </button>
             )}
 
@@ -177,4 +177,10 @@ export default function CampaignStatusPage() {
       </div>
     </div>
   );
+}
+
+// CRITICAL: This function is required for Next.js Static Export to handle dynamic routes [id].
+// It tells the build process "don't try to pre-generate any IDs, just let the client handle it."
+export function generateStaticParams() {
+  return [];
 }
