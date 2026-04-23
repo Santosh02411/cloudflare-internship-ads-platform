@@ -1,11 +1,5 @@
-/**
- * Campaign Status Page Component
- */
+export const dynamic = 'force-static';
 'use client';
-
-// 1. We must remove 'force-dynamic' and 'edge' because they conflict with static exports.
-// 2. We use dynamicParams to let the browser handle the ID.
-export const dynamicParams = true;
 
 import { useParams } from 'next/navigation';
 import usePolling from '@/hooks/usePolling';
@@ -14,14 +8,14 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { FiRefreshCw, FiXCircle } from 'react-icons/fi';
 
-const PLATFORM_COLORS = {
+const PLATFORM_COLORS: Record<string, string> = {
   meta: 'bg-blue-50 border-blue-200',
   google_ads: 'bg-yellow-50 border-yellow-200',
   tiktok: 'bg-black/5 border-black/10',
   linkedin: 'bg-blue-50 border-blue-200',
 };
 
-const STATUS_COLORS = {
+const STATUS_COLORS: Record<string, string> = {
   success: 'text-green-600',
   failed: 'text-red-600',
   pending: 'text-yellow-600',
@@ -29,17 +23,20 @@ const STATUS_COLORS = {
 };
 
 export default function CampaignStatusPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string;
+  
   const { status, loading } = usePolling(id, 3000, true);
   const [retrying, setRetrying] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
   const handleRetry = async () => {
+    if (!id) return;
     setRetrying(true);
     try {
       await publishAPI.publish(id);
       toast.success('Retry initiated');
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.response?.data?.error || 'Failed to retry');
     } finally {
       setRetrying(false);
@@ -61,7 +58,7 @@ export default function CampaignStatusPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin mb-4 text-blue-600">
+          <div className="animate-spin mb-4 text-blue-600 flex justify-center">
             <FiRefreshCw size={32} />
           </div>
           <p>Loading campaign status...</p>
@@ -86,7 +83,6 @@ export default function CampaignStatusPage() {
         <div className="bg-white rounded-lg shadow p-8">
           <h1 className="text-3xl font-bold mb-6 text-gray-900">{campaignName}</h1>
 
-          {/* Overall Progress */}
           <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
             <h2 className="text-lg font-bold mb-4">Overall Progress</h2>
             <div className="space-y-4">
@@ -126,11 +122,13 @@ export default function CampaignStatusPage() {
             </div>
           </div>
 
-          {/* Platform Status */}
           <h2 className="text-lg font-bold mb-4">Platform Status</h2>
           <div className="space-y-3">
-            {platforms.map((platform) => (
-              <div key={platform.campaignPlatformId} className={`border rounded-lg p-4 ${PLATFORM_COLORS[platform.platformType] || 'bg-gray-50 border-gray-200'}`}>
+            {platforms.map((platform: any) => (
+              <div 
+                key={platform.campaignPlatformId} 
+                className={`border rounded-lg p-4 ${PLATFORM_COLORS[platform.platformType] || 'bg-gray-50 border-gray-200'}`}
+              >
                 <div className="flex justify-between items-center">
                   <div>
                     <h3 className="font-semibold text-gray-900 capitalize">
@@ -140,18 +138,14 @@ export default function CampaignStatusPage() {
                       <p className="text-sm text-red-600 mt-1">{platform.errorMessage}</p>
                     )}
                   </div>
-                  <span className={`font-bold ${STATUS_COLORS[platform.status]}`}>
+                  <span className={`font-bold ${STATUS_COLORS[platform.status] || 'text-gray-600'}`}>
                     {platform.status.toUpperCase()}
                   </span>
                 </div>
-                {platform.adId && (
-                  <p className="text-xs text-gray-600 mt-2">Ad ID: {platform.adId}</p>
-                )}
               </div>
             ))}
           </div>
 
-          {/* Actions */}
           <div className="flex gap-4 mt-8">
             {summary.failed > 0 && (
               <button
@@ -159,17 +153,8 @@ export default function CampaignStatusPage() {
                 disabled={retrying}
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg"
               >
-                <FiRefreshCw className={retrying ? 'animate-spin' : ''} /> {retrying ? 'Retrying...' : 'Retry Failed'}
-              </button>
-            )}
-
-            {summary.pending > 0 && (
-              <button
-                onClick={handleCancel}
-                disabled={cancelling}
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg"
-              >
-                <FiXCircle /> {cancelling ? 'Cancelling...' : 'Cancel'}
+                <FiRefreshCw className={retrying ? 'animate-spin' : ''} /> 
+                {retrying ? 'Retrying...' : 'Retry Failed'}
               </button>
             )}
           </div>
@@ -177,10 +162,4 @@ export default function CampaignStatusPage() {
       </div>
     </div>
   );
-}
-
-// CRITICAL: This function is required for Next.js Static Export to handle dynamic routes [id].
-// It tells the build process "don't try to pre-generate any IDs, just let the client handle it."
-export function generateStaticParams() {
-  return [];
 }
