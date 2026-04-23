@@ -3,7 +3,10 @@
  * Implements Cloudflare internship standards with proper error handling and retries
  */
 
-import { AdPayload, AdResponse, PlatformType } from '../platforms/IPlatform';
+import { AdPayload, AdResponse } from '../platforms/IPlatform';
+
+// Define PlatformType as a union of supported platforms
+type PlatformType = 'meta' | 'google_ads' | 'tiktok' | 'linkedin';
 
 // Cloudflare Queue types
 interface Queue<T> {
