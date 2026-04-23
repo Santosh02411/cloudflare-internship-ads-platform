@@ -8,3 +8,9 @@ module.exports = {
     esmExternals: true,
   },
 };
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export', // Add this line
+  // ... your other config
+};
+module.exports = nextConfig;

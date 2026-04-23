@@ -10,6 +10,8 @@ import { publishAPI } from '@/services/api';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { FiRefreshCw, FiXCircle } from 'react-icons/fi';
+export const dynamic = 'force-static';
+export const runtime = 'edge';
 
 const PLATFORM_COLORS = {
   meta: 'bg-blue-50 border-blue-200',
