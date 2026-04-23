@@ -1,7 +1,7 @@
 /**
  * Root Layout
  */
-export const runtime = 'edge';
+// export const runtime = 'edge';
 import './styles/globals.css';
 import { Toaster } from 'react-hot-toast';
 
