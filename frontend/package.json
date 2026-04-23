@@ -1,0 +1,30 @@
+{
+  "name": "social-media-ads-frontend",
+  "version": "1.0.0",
+  "description": "Unified Social Media Ads SaaS Platform - Frontend",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next": "^14.0.0",
+    "tailwindcss": "^3.3.0",
+    "axios": "^1.6.0",
+    "zustand": "^4.4.0",
+    "react-hot-toast": "^2.4.0",
+    "react-icons": "^4.11.0",
+    "swr": "^2.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.28",
+    "eslint": "^8.49.0",
+    "eslint-config-next": "^14.0.0"
+  }
+}

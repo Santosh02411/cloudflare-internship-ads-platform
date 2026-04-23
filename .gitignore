@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output/
+
+# Production
+build/
+dist/
+.next/
+out/
+
+# Misc
+.DS_Store
+*.pem
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# OS
+Thumbs.db
+*.tmp
+
+# Cloudflare
+.wrangler/
+.wrangler
+wrangler.toml.local
+wrangler.toml
+
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Build
+.turbo/
+dist/
+build/
+
+# Environment
+.dev.vars
+.env.local
+.env.*.local
+
+
+
+backend/wrangler.toml

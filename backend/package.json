@@ -1,0 +1,36 @@
+{
+  "name": "social-media-ads-backend",
+  "version": "1.0.0",
+  "description": "Unified Social Media Ads SaaS Platform - Backend",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "db:migrate": "wrangler d1 migrations apply socialmediaads --remote",
+    "db:local": "wrangler d1 execute socialmediaads --file ./src/migrations/schema.sql",
+    "test": "vitest",
+    "build": "echo 'No build step needed for Workers'"
+  },
+  "dependencies": {
+    "hono": "^4.0.0",
+    "uuid": "^9.0.1",
+    "crypto-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240605.0",
+    "wrangler": "^3.40.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
+
+
+
+
+

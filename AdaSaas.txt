@@ -1,0 +1,224 @@
+Cloudflare Full-Stack Internship 
+Assignment 
+Unified Social Media Ads SaaS Platform 
+Overview 
+This assignment simulates building a real-world Ads Automation SaaS platform similar to 
+tools like Unified APIs (e.g., Unified.to, Ayrshare). 
+Candidates will build a system that allows users to: 
+● Create and manage ad campaigns 
+● Publish ads across multiple platforms 
+● Track campaign status and performance 
+● Manage API integrations centrally 
+Supported platforms include: 
+● Meta (Facebook / Instagram) 
+● Google Ads 
+● YouTube 
+● TikTok 
+● LinkedIn 
+● X (Twitter) 
+● Snapchat 
+● Pinterest 
+● Reddit 
+● Microsoft Advertising 
+● Amazon Ads 
+● Quora 
+● Spotify 
+● WhatsApp 
+● Threads 
+● Telegram 
+Objective 
+Build a Unified Ads Management Platform where users can: 
+● Connect multiple ad platform accounts 
+● Create and publish ads to multiple platforms 
+● Manage campaigns centrally 
+● Track posting status and logs 
+● Extend platform integrations easily 
+Core Features 
+1. Authentication & User Management 
+● Simple login system 
+● Token-based authentication 
+● Store sessions in KV or D1 
+2. Platform Integration Layer (CRITICAL) 
+Design a plug-and-play integration system: 
+Requirements: 
+● Add/remove platforms dynamically 
+● Store API credentials securely (KV) 
+● Normalize APIs across platforms 
+Each platform should support: 
+● Authentication (OAuth or API key-based — mock allowed) 
+● Post creation (ad creative + metadata) 
+● Status tracking 
+3. Campaign Management 
+Users should be able to: 
+● Create campaign: 
+○ Title 
+○ Budget 
+○ Target platforms 
+○ Schedule 
+● Add creatives: 
+○ Image / Video / Text 
+● Save draft or publish 
+Store in D1 
+4. Ad Publishing Engine 
+● User selects platforms → publishes campaign 
+Flow: 
+1. User submits campaign 
+2. Create jobs per platform 
+3. Push jobs to Queue 
+4. Worker processes: 
+○ Calls platform APIs (or mocks) 
+○ Stores response 
+○ Updates status 
+5. Media Management 
+● Upload creatives: 
+○ Images 
+○ Videos 
+● Store in R2 
+● Link media to campaigns 
+6. Durable Objects (Stateful Layer) 
+Use for: 
+● Campaign orchestration 
+● Rate limiting per platform 
+● Tracking job execution state 
+7. Status Tracking Dashboard 
+● Show: 
+○ Campaign status per platform 
+○ Success / Failed / Pending 
+○ API responses 
+8. Logs & Audit Trail 
+Track: 
+● API calls 
+● Errors 
+● Publishing history 
+Store in D1 or KV 
+9. Caching (KV) 
+● Cache: 
+○ Platform configs 
+○ Access tokens (if short-lived) 
+Technical Requirements 
+Frontend (Cloudflare Pages) 
+● React.js or Next.js 
+● TailwindCSS preferred 
+Screens: 
+● Login 
+● Dashboard 
+● Create Campaign 
+● Media Library 
+● Platform Integrations 
+● Campaign Status 
+Backend (Workers + Hono) 
+POST   /api/auth/login   
+POST   /api/campaigns   
+GET    /api/campaigns   
+POST   /api/publish   
+GET    /api/status   
+POST   /api/platforms   
+GET    /api/platforms   
+Suggested Database Schema (D1) 
+Users 
+● id 
+● email 
+● password_hash 
+Platforms 
+● id 
+● name 
+● credentials_ref (KV) 
+● config 
+Campaigns 
+● id 
+● title 
+● budget 
+● status 
+● created_at 
+CampaignPlatforms 
+● id 
+● campaign_id 
+● platform_id 
+● status 
+● response 
+Media 
+● id 
+● type 
+● file_url (R2) 
+● created_at 
+Architecture Expectations 
+● Proper use of: 
+○ Workers (API layer) 
+○ Durable Objects (stateful orchestration) 
+○ KV (tokens/config/cache) 
+○ D1 (relational data) 
+○ R2 (media storage) 
+○ Queues (async publishing) 
+�
+�
+Innovation Expectations (CRITICAL) 
+Candidates must go beyond basic posting. 
+Examples: 
+● Smart campaign duplication across platforms 
+● Auto-format creatives per platform 
+● AI-generated ad copy 
+● Budget optimization suggestions 
+● Best time-to-post prediction 
+● Cross-platform analytics normalization 
+● Retry & fallback mechanisms 
+● Bulk campaign creation 
+● Template-based ads 
+● A/B testing system 
+Evaluation Criteria 
+Area 
+Weight 
+Innovation & Features 50% 
+Architecture 
+Integration Design 
+Code Quality 
+Cloudflare Usage 
+20% 
+15% 
+10% 
+5% 
+Submission Requirements 
+1. GitHub Repository 
+● Clean structure 
+● Modular integrations 
+2. README must include: 
+● Setup instructions 
+● Architecture diagram 
+● Platform integration design 
+● How new platforms can be added 
+3. Live Deployment 
+● Cloudflare Pages + Workers 
+4. Demo Video (Recommended) 
+● 3–5 min walkthrough 
+5. Cloudflare Access (Mandatory) 
+Candidate must: 
+● Share: 
+○ Cloudflare project 
+○ OR add reviewer as collaborator 
+● Provide: 
+○ Environment variables 
+○ Mock/test API credentials 
+Timeline 
+● Expected: 5–7 days 
+What We’re Testing 
+● Platform thinking (SaaS mindset) 
+● API abstraction skills 
+● Ability to design scalable integrations 
+● Real-world system design 
+● Innovation in ad-tech 
+Red Flags 
+● Hardcoded platform logic 
+● No async processing 
+● No abstraction layer 
+● Poor error handling 
+● No innovation 
+Stretch Goal (Top Candidates) 
+● Build a unified ads API layer 
+● One API → publish everywhere 
+● Intelligent retry/fallback per platform 
+● Unified analytics dashboard 
+● Campaign performance scoring 
+Final Note 
+This assignment reflects a real startup-grade problem in AdTech. 
+We are not looking for just execution — 
+we are looking for builders who can design scalable, extensible, and innovative 
+systems. 
