@@ -1,9 +1,12 @@
-export const dynamicParams = true;
+import './globals.css';
 
-export function generateStaticParams() {
-  return []; // This allows the build to finish without knowing IDs upfront
-}
-
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <title>Ads SaaS Platform</title>
+      </head>
+      <body>{children}</body>
+    </html>
+  );
 }

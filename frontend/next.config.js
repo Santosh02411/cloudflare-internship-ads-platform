@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // REMOVE: output: 'export',
+  output: 'export',
+  distDir: 'out',
   images: { unoptimized: true },
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
+  trailingSlash: true,
 };
-
 export default nextConfig;
