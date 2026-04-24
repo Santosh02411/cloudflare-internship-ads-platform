@@ -2,11 +2,11 @@
  * Frontend API Service - Communicates with backend
  */
 
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
 
-const apiClient = axios.create({
+const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -36,67 +36,67 @@ apiClient.interceptors.response.use(
 
 // Auth APIs
 export const authAPI = {
-  signup: (email, password, name) =>
+  signup: (email: string, password: string, name: string) =>
     apiClient.post('/api/auth/signup', { email, password, name }),
-  login: (email, password) =>
+  login: (email: string, password: string) =>
     apiClient.post('/api/auth/login', { email, password }),
 };
 
 // Campaign APIs
 export const campaignAPI = {
-  list: (limit = 50, offset = 0) =>
+  list: (limit: number = 50, offset: number = 0) =>
     apiClient.get('/api/campaigns', { params: { limit, offset } }),
-  get: (id) => apiClient.get(`/api/campaigns/${id}`),
-  create: (data) => apiClient.post('/api/campaigns', data),
-  update: (id, data) => apiClient.put(`/api/campaigns/${id}`, data),
-  delete: (id) => apiClient.delete(`/api/campaigns/${id}`),
-  duplicate: (id) => apiClient.post(`/api/campaigns/${id}/duplicate`),
+  get: (id: string) => apiClient.get(`/api/campaigns/${id}`),
+  create: (data: any) => apiClient.post('/api/campaigns', data),
+  update: (id: string, data: any) => apiClient.put(`/api/campaigns/${id}`, data),
+  delete: (id: string) => apiClient.delete(`/api/campaigns/${id}`),
+  duplicate: (id: string) => apiClient.post(`/api/campaigns/${id}/duplicate`),
 };
 
 // Media APIs
 export const mediaAPI = {
-  upload: (file) => {
+  upload: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
     return apiClient.post('/api/media/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
-  list: (limit = 50, offset = 0) =>
+  list: (limit: number = 50, offset: number = 0) =>
     apiClient.get('/api/media', { params: { limit, offset } }),
-  delete: (id) => apiClient.delete(`/api/media/${id}`),
+  delete: (id: string) => apiClient.delete(`/api/media/${id}`),
 };
 
 // Platform APIs
 export const platformAPI = {
   list: () => apiClient.get('/api/platforms'),
-  connect: (platformType, authCode, redirectUri) =>
+  connect: (platformType: string, authCode: string, redirectUri: string) =>
     apiClient.post('/api/platforms/connect', {
       platformType,
       authCode,
       redirectUri,
     }),
-  disconnect: (platformType) =>
+  disconnect: (platformType: string) =>
     apiClient.delete(`/api/platforms/${platformType}`),
 };
 
 // Publish APIs
 export const publishAPI = {
-  publish: (campaignId) =>
+  publish: (campaignId: string) =>
     apiClient.post('/api/publish', { campaignId }),
-  getStatus: (campaignId) =>
+  getStatus: (campaignId: string) =>
     apiClient.get(`/api/status/${campaignId}`),
 };
 
 // AI APIs
 export const aiAPI = {
-  generateCopy: (productName, targetAudience, tone = 'professional') =>
+  generateCopy: (productName: string, targetAudience: string, tone: string = 'professional') =>
     apiClient.post('/api/ai/generate-copy', {
       productName,
       targetAudience,
       tone,
     }),
-  analyzeCopy: (adCopy, platformType) =>
+  analyzeCopy: (adCopy: string, platformType: string) =>
     apiClient.post('/api/ai/analyze-copy', { adCopy, platformType }),
 };
 

@@ -8,9 +8,36 @@ import { useState, useCallback } from 'react';
 import useSWR from 'swr';
 import { campaignAPI } from '../services/api';
 
-const fetcher = (url) => campaignAPI.list().then((res) => res.data.data);
+interface Campaign {
+  id: string;
+  name: string;
+  description?: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  [key: string]: any;
+}
 
-export function useCampaigns() {
+interface CampaignData {
+  campaigns: Campaign[];
+  total: number;
+  [key: string]: any;
+}
+
+const fetcher = (): Promise<CampaignData> => campaignAPI.list().then((res) => res.data.data);
+
+interface UseCampaignsReturn {
+  campaigns: Campaign[];
+  isLoading: boolean;
+  error: any;
+  create: (campaignData: any) => Promise<Campaign>;
+  update: (id: string, updates: any) => Promise<Campaign>;
+  delete: (id: string) => Promise<void>;
+  duplicate: (id: string) => Promise<Campaign>;
+  mutate: () => void;
+}
+
+export function useCampaigns(): UseCampaignsReturn {
   const { data, error, isLoading, mutate } = useSWR('/api/campaigns', fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
@@ -19,12 +46,12 @@ export function useCampaigns() {
   const campaigns = data?.campaigns || [];
 
   const create = useCallback(
-    async (campaignData) => {
+    async (campaignData: any): Promise<Campaign> => {
       try {
         const response = await campaignAPI.create(campaignData);
         mutate();
         return response.data.data;
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error.response?.data?.error || 'Failed to create campaign');
       }
     },
@@ -32,12 +59,12 @@ export function useCampaigns() {
   );
 
   const update = useCallback(
-    async (id, updates) => {
+    async (id: string, updates: any): Promise<Campaign> => {
       try {
         const response = await campaignAPI.update(id, updates);
         mutate();
         return response.data.data;
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error.response?.data?.error || 'Failed to update campaign');
       }
     },
@@ -45,11 +72,11 @@ export function useCampaigns() {
   );
 
   const deleteCampaign = useCallback(
-    async (id) => {
+    async (id: string): Promise<void> => {
       try {
         await campaignAPI.delete(id);
         mutate();
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error.response?.data?.error || 'Failed to delete campaign');
       }
     },
@@ -57,12 +84,12 @@ export function useCampaigns() {
   );
 
   const duplicate = useCallback(
-    async (id) => {
+    async (id: string): Promise<Campaign> => {
       try {
         const response = await campaignAPI.duplicate(id);
         mutate();
         return response.data.data;
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error.response?.data?.error || 'Failed to duplicate campaign');
       }
     },

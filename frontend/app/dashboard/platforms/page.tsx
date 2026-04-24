@@ -11,7 +11,22 @@ import toast from 'react-hot-toast';
 import useAuth from '@/hooks/useAuth';
 import { platformAPI } from '@/services/api';
 
-const PLATFORM_CARDS = [
+interface PlatformCard {
+  key: string;
+  label: string;
+  connectType: string;
+  connectLabel: string;
+  disconnectLabel: string;
+  helperText: string;
+}
+
+interface Platform {
+  platformType: string;
+  isActive: boolean;
+  [key: string]: any;
+}
+
+const PLATFORM_CARDS: PlatformCard[] = [
   {
     key: 'instagram',
     label: 'Instagram',
@@ -49,7 +64,7 @@ const PLATFORM_CARDS = [
 export default function PlatformsPage() {
   const router = useRouter();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
-  const [platforms, setPlatforms] = useState([]);
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingType, setActionLoadingType] = useState('');
 
@@ -64,7 +79,7 @@ export default function PlatformsPage() {
     try {
       const response = await platformAPI.list();
       setPlatforms(response.data?.data?.platforms || []);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.response?.data?.error || 'Failed to load platforms');
     } finally {
       setLoading(false);
@@ -78,14 +93,14 @@ export default function PlatformsPage() {
   }, [isAuthenticated]);
 
   const platformConnectionMap = useMemo(() => {
-    const map = {};
+    const map: Record<string, Platform> = {};
     for (const platform of platforms) {
       map[platform.platformType] = platform;
     }
     return map;
   }, [platforms]);
 
-  const handleConnect = async (connectType, label) => {
+  const handleConnect = async (connectType: string, label: string) => {
     setActionLoadingType(connectType);
     try {
       await platformAPI.connect(
@@ -95,20 +110,20 @@ export default function PlatformsPage() {
       );
       toast.success(`${label} connected successfully`);
       await loadPlatforms();
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.response?.data?.error || `Failed to connect ${label}`);
     } finally {
       setActionLoadingType('');
     }
   };
 
-  const handleDisconnect = async (connectType, label) => {
+  const handleDisconnect = async (connectType: string, label: string) => {
     setActionLoadingType(connectType);
     try {
       await platformAPI.disconnect(connectType);
       toast.success(`${label} disconnected successfully`);
       await loadPlatforms();
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.response?.data?.error || `Failed to disconnect ${label}`);
     } finally {
       setActionLoadingType('');

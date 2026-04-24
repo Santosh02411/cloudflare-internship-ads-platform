@@ -7,8 +7,30 @@
 import { useState, useEffect } from 'react';
 import authService from '../services/auth';
 
-export function useAuth() {
-  const [user, setUser] = useState(null);
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  [key: string]: any;
+}
+
+interface AuthResponse {
+  token: string;
+  user: User;
+  expiresIn: number;
+}
+
+interface UseAuthReturn {
+  user: User | null;
+  loading: boolean;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<AuthResponse>;
+  signup: (email: string, password: string, name: string) => Promise<AuthResponse>;
+  logout: () => void;
+}
+
+export function useAuth(): UseAuthReturn {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -21,7 +43,7 @@ export function useAuth() {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<AuthResponse> => {
     setLoading(true);
     try {
       const result = await authService.login(email, password);
@@ -33,7 +55,7 @@ export function useAuth() {
     }
   };
 
-  const signup = async (email, password, name) => {
+  const signup = async (email: string, password: string, name: string): Promise<AuthResponse> => {
     setLoading(true);
     try {
       const result = await authService.signup(email, password, name);
@@ -45,7 +67,7 @@ export function useAuth() {
     }
   };
 
-  const logout = () => {
+  const logout = (): void => {
     authService.logout();
     setUser(null);
     setIsAuthenticated(false);

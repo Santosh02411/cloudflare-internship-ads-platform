@@ -7,10 +7,23 @@
 import { useEffect, useState } from 'react';
 import { publishAPI } from '../services/api';
 
-export function usePolling(campaignId, interval = 5000, enabled = true) {
-  const [status, setStatus] = useState(null);
+interface StatusData {
+  summary: any;
+  platforms: any[];
+  campaignName: string;
+  [key: string]: any;
+}
+
+interface UsePollingReturn {
+  status: StatusData | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export function usePolling(campaignId: string | null, interval: number = 5000, enabled: boolean = true): UsePollingReturn {
+  const [status, setStatus] = useState<StatusData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!enabled || !campaignId) {
@@ -23,7 +36,7 @@ export function usePolling(campaignId, interval = 5000, enabled = true) {
         const response = await publishAPI.getStatus(campaignId);
         setStatus(response.data.data);
         setError(null);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.response?.data?.error || 'Failed to fetch status');
       } finally {
         setLoading(false);
